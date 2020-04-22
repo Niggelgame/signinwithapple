@@ -97,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             FlatButton(
               onPressed: () async {
+                print(await SignInWithApple().available);
                 AppleUser t = await SignInWithApple().signIn(config: SignInWithAppleConfig(clientId: "com.kedil.examplesignin", urlSchemeRedirectUri: "com.kedil.signin"));
                 print(t.idToken);
                 print(t.authCode);

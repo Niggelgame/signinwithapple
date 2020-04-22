@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 
@@ -89,7 +90,7 @@ class SignInWithApple {
     if(await AppleSignIn.isAvailable()){
       /// Native Apple iOS 13 Login
       try{
-        AppleIdCredential creds = await loginNative();
+        AppleIdCredential creds = await _loginNative();
         return AppleUser(idToken: String.fromCharCodes(creds.identityToken), authCode: String.fromCharCodes(creds.authorizationCode));
       } on CancelledLoginException catch(e) {
         print("User cancelled login");
@@ -100,14 +101,17 @@ class SignInWithApple {
     } else {
       /// Flutter_Web_Auth Signin
       if(config != null) {
-        return await loginWeb(config);
+        if(!await available){
+          return null;
+        }
+        return await _loginWeb(config);
       } else {
         return null;
       }
     }
   }
 
-  Future<void> startServer(String redirectUri) async {
+  Future<void> _startServer(String redirectUri) async {
     final server = await HttpServer.bind('127.0.0.1', 43823, shared: true);
 
     server.listen((req) async {
@@ -149,8 +153,8 @@ class SignInWithApple {
     });
   }
 
-  Future<AppleUser> loginWeb(SignInWithAppleConfig config) async {
-    startServer(config.urlSchemeRedirectUri);
+  Future<AppleUser> _loginWeb(SignInWithAppleConfig config) async {
+    _startServer(config.urlSchemeRedirectUri);
     final url = Uri.https("appleid.apple.com", "/auth/authorize", {
       'client_id': config.clientId,
       'redirect_uri': 'http://fuf.me:43823/',
@@ -174,7 +178,7 @@ class SignInWithApple {
     return AppleUser(idToken: idToken, authCode: code);
   }
 
-  Future<AppleIdCredential> loginNative() async {
+  Future<AppleIdCredential> _loginNative() async {
     final AuthorizationResult result = await AppleSignIn.performRequests([
       AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
     ]);
@@ -189,6 +193,24 @@ class SignInWithApple {
       case AuthorizationStatus.error:
         throw LoginErrorException(result.error.localizedDescription);
         break;
+    }
+  }
+
+  Future<bool> get available async {
+    if(Platform.isIOS) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      String version = iosInfo.systemVersion;
+      print(version);
+      List<String> split = version.split(".");
+      int versionNumber = int.parse(split[0]);
+      if(versionNumber >= 11) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
     }
   }
 
