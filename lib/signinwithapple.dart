@@ -11,20 +11,6 @@ import 'package:flutter_web_auth/flutter_web_auth.dart';
 /// A Calculator.
 class SignInWithApple {
 
-  /*static final SignInWithApple _instance = SignInWithApple._internal();
-  factory SignInWithApple() => _instance;
-  SignInWithApple._internal() {
-
-  }
-
-  static SignInWithApple getInstance() {
-    return _instance;
-  }*/
-
-
-
-  // final Future<bool> _isAvailableFuture = AppleSignIn.isAvailable();
-
   getHtml(String redirectUrl) {
     return """
 <!DOCTYPE html>
@@ -113,28 +99,18 @@ class SignInWithApple {
 
   Future<void> _startServer(String redirectUri) async {
     final server = await HttpServer.bind('127.0.0.1', 43823, shared: true);
-
     server.listen((req) async {
       ContentType contentType = req.headers.contentType;
-      print("printer");
       print(req.method);
       print(req.uri.toString());
-      //setState(() { _status = 'Received request!'; });
       if(req.method == 'POST') {
         print("in post");
-        String content = await utf8.decoder.bind(req).join(); /*2*/
+        String content = await utf8.decoder.bind(req).join();
         print(content);
         //req.response.headers.add('Content-Type', 'text/html');
         print(content.length);
-
-        //req.response.headers.add('Content-Type', 'text/html');
         req.response.write(getHtml(redirectUri + "://" + content));
         req.response.redirect(Uri.dataFromString(redirectUri + "://" + content));
-        //req.response.headers.add(name, value)
-
-        //final url = Uri.directory(redirectUri);
-        //print(url);
-        //req.response.redirect(url);
         req.response.close();
         server.close();
       } else {
@@ -146,10 +122,6 @@ class SignInWithApple {
         req.response.close();
         server.close();
       }
-
-      print("afterpost");
-
-
     });
   }
 
@@ -168,8 +140,6 @@ class SignInWithApple {
     final result = await FlutterWebAuth.authenticate(url: url.toString().replaceAll("+", "%20"), callbackUrlScheme: config.urlSchemeRedirectUri);
 
     final Uri uri = Uri.dataFromString(result.replaceAll("://", "://applesignin.com?"));
-
-
 
     String code = uri.queryParameters["code"];
     String idToken = uri.queryParameters["id_token"];
@@ -224,7 +194,6 @@ class LoginErrorException implements Exception {
   LoginErrorException(this.errorMessage);
 }
 
-
 class SignInWithAppleConfig {
   final String clientId;
   final String urlSchemeRedirectUri;
@@ -233,9 +202,7 @@ class SignInWithAppleConfig {
     @required this.clientId,
     @required this.urlSchemeRedirectUri
   });
-
 }
-
 
 class AppleUser {
   final String idToken;
