@@ -62,7 +62,7 @@ class SignInWithApple {
 <body>
   <main>
     <div id="icon">&#x1F3C7;</div>
-    <div id="text">Press the button below to sign in using your Localtest.me account.</div>
+    <div id="text">Continue to App.</div>
     <div id="button"><a href="$redirectUrl">Sign in</a></div>
   </main>
 </body>
@@ -100,11 +100,9 @@ class SignInWithApple {
   Future<void> _startServer(String redirectUri) async {
     final server = await HttpServer.bind('127.0.0.1', 43823, shared: true);
     server.listen((req) async {
-      ContentType contentType = req.headers.contentType;
-      print(req.method);
-      print(req.uri.toString());
+      //TODO: Check contentType
+      //ContentType contentType = req.headers.contentType;
       if(req.method == 'POST') {
-        print("in post");
         String content = await utf8.decoder.bind(req).join();
         print(content);
         //req.response.headers.add('Content-Type', 'text/html');
@@ -126,16 +124,25 @@ class SignInWithApple {
   }
 
   Future<AppleUser> _loginWeb(SignInWithAppleConfig config) async {
-    _startServer(config.urlSchemeRedirectUri);
-    final url = Uri.https("appleid.apple.com", "/auth/authorize", {
-      'client_id': config.clientId,
-      'redirect_uri': 'http://fuf.me:43823/',
-      'response_type': 'code id_token',
-      'scope': 'name email',
-      'response_mode': 'form_post'
-    });
-
-    print(url.toString().replaceAll("+", "%20"));
+    Uri url;
+    if(config.useOwnRedirectServer && config.redirectServerURL.isNotEmpty) {
+      url = Uri.https("appleid.apple.com", "/auth/authorize", {
+        'client_id': config.clientId,
+        'redirect_uri': config.redirectServerURL,
+        'response_type': 'code id_token',
+        'scope': 'name email',
+        'response_mode': 'form_post'
+      });
+    } else {
+      _startServer(config.urlSchemeRedirectUri);
+      url = Uri.https("appleid.apple.com", "/auth/authorize", {
+        'client_id': config.clientId,
+        'redirect_uri': 'http://fuf.me:43823/',
+        'response_type': 'code id_token',
+        'scope': 'name email',
+        'response_mode': 'form_post'
+      });
+    }
 
     final result = await FlutterWebAuth.authenticate(url: url.toString().replaceAll("+", "%20"), callbackUrlScheme: config.urlSchemeRedirectUri);
 
@@ -145,7 +152,13 @@ class SignInWithApple {
     String idToken = uri.queryParameters["id_token"];
     String user = uri.queryParameters["user"];
 
-    return AppleUser(idToken: idToken, authCode: code);
+
+    // The user is only provided the first time a user uses his Apple-ID to sign in to your service
+    if(user.isNotEmpty){
+      return AppleUser(idToken: idToken, authCode: code, user: user);
+    } else {
+      return AppleUser(idToken: idToken, authCode: code);
+    }
   }
 
   Future<AppleIdCredential> _loginNative() async {
@@ -197,19 +210,25 @@ class LoginErrorException implements Exception {
 class SignInWithAppleConfig {
   final String clientId;
   final String urlSchemeRedirectUri;
+  final bool useOwnRedirectServer;
+  final String redirectServerURL;
 
   SignInWithAppleConfig({
     @required this.clientId,
-    @required this.urlSchemeRedirectUri
+    @required this.urlSchemeRedirectUri,
+    @required this.useOwnRedirectServer,
+    this.redirectServerURL
   });
 }
 
 class AppleUser {
   final String idToken;
   final String authCode;
+  final String user;
 
   AppleUser({
     @required this.idToken,
-    @required this.authCode
+    @required this.authCode,
+    this.user
   });
 }
