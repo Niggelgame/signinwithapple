@@ -65,7 +65,7 @@ In your [`Apple-Developer-Console`][Apple-Developer-Console] go to your `Certifi
 
 Now choose `Identifiers` in the left column, and add a new Service ID. Set your Description and Identifier (needs to be different from your Bundle Identifier). This identifier will be your `clientID`. After creation, open it up again and enable `Sign in with Apple`. 
 If you want to use your own server to handle the redirect back to the app, you put your own domain and redirect ULR in (the url you will specify later in the app, that handles the redirect). 
-If you don't want to use you own server, put `fuf.me` as the domain, and `http://fuf.me/43823` as the redirect url in, then save. 
+If you don't want to use you own server, put `fuf.me` as the domain, and `http://fuf.me/43823/` as the redirect url in, then save. 
 _You can't just put your URL-Scheme here, because Sign-In-With-Apple Redirect-URLs need to have the http / https Scheme._
 
 ### In the code
