@@ -44,7 +44,7 @@ In order to capture the callback url, the following part needs to be added to yo
 		<string>Editor</string>
 		<key>CFBundleURLSchemes</key>
 		<array>
-			<string>com.kedil.signin</string>
+			<string>YOUR_CALLBACK_URL_SCHEME_HERE</string>
 		</array>
 	</dict>
 </array>
