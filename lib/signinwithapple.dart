@@ -17,8 +17,16 @@ class SignInWithApple {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Grant Access to Flutter</title>
+  <title>REDIRECTING</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv = "refresh" content = "1; url = $redirectUrl" />
+  <script>
+    document.write("You will get redirected in a few seconds");
+    windows.setTimeout(function() {
+      // Move to url Scheme
+      windows.location.href = $redirectUrl;
+    }, 500);
+  </script>
   <style>
     html, body { margin: 0; padding: 0; }
 
@@ -31,39 +39,16 @@ class SignInWithApple {
       font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
     }
 
-    #icon {
-      font-size: 96pt;
-    }
-
     #text {
       padding: 2em;
       max-width: 260px;
       text-align: center;
     }
-
-    #button a {
-      display: inline-block;
-      padding: 6px 12px;
-      color: white;
-      border: 1px solid rgba(27,31,35,.2);
-      border-radius: 3px;
-      background-image: linear-gradient(-180deg, #34d058 0%, #22863a 90%);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    #button a:active {
-      background-color: #279f43;
-      background-image: none;
-    }
   </style>
 </head>
 <body>
   <main>
-    <div id="icon">&#x1F3C7;</div>
     <div id="text">Continue to App.</div>
-    <div id="button"><a href="$redirectUrl">Sign in</a></div>
   </main>
 </body>
 </html>
@@ -100,23 +85,13 @@ class SignInWithApple {
   Future<void> _startServer(String redirectUri) async {
     final server = await HttpServer.bind('127.0.0.1', 43823, shared: true);
     server.listen((req) async {
-      //TODO: Check contentType
-      //ContentType contentType = req.headers.contentType;
       if(req.method == 'POST') {
         String content = await utf8.decoder.bind(req).join();
-        print(content);
-        //req.response.headers.add('Content-Type', 'text/html');
-        print(content.length);
-        req.response.write(getHtml(redirectUri + "://" + content));
-        req.response.redirect(Uri.dataFromString(redirectUri + "://" + content));
-        req.response.close();
-        server.close();
-      } else {
+        //print(content);
         req.response.headers.add('Content-Type', 'text/html');
-        req.response.write(getHtml((redirectUri + "://success?code=1337")));
-        //final url = Uri.directory(redirectUri);
-        //print(url);
-        //req.response.redirect(url);
+        req.response.write(getHtml(redirectUri + "://" + content));
+        /// Redirect currently not working because of insecure redirect error on Android / Chrome
+        /// So we use Meta Refresh to redirect after one second, or on iOS using the Javascript method, which isn't executed on Android
         req.response.close();
         server.close();
       }
@@ -154,7 +129,7 @@ class SignInWithApple {
 
 
     // The user is only provided the first time a user uses his Apple-ID to sign in to your service
-    if(user.isNotEmpty){
+    if(user != null){
       return AppleUser(idToken: idToken, authCode: code, user: user);
     } else {
       return AppleUser(idToken: idToken, authCode: code);
