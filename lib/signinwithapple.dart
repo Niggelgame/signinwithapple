@@ -62,7 +62,7 @@ class SignInWithApple {
       /// Native Apple iOS 13 Login
       try{
         AppleIdCredential creds = await _loginNative();
-        return AppleUser(idToken: String.fromCharCodes(creds.identityToken), authCode: String.fromCharCodes(creds.authorizationCode));
+        return AppleUser(idToken: String.fromCharCodes(creds.identityToken), authCode: String.fromCharCodes(creds.authorizationCode), user: creds.user);
       } on CancelledLoginException catch(e) {
         print("User cancelled login");
       } on LoginErrorException catch(e) {
