@@ -36,17 +36,18 @@ In order to capture the callback url, the following `activity` needs to be added
 
 In order to capture the callback url, the following part needs to be added to your `Info.plist` in the iOS-Folder. Be sure to replace `YOUR_CALLBACK_URL_SCHEME_HERE` with your actual callback url scheme.
 
-```<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.kedil.signin</string>
-			</array>
-		</dict>
-	</array>
+```
+<key>CFBundleURLTypes</key>
+<array>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>com.kedil.signin</string>
+		</array>
+	</dict>
+</array>
 
 ```
 
