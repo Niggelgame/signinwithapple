@@ -1,8 +1,7 @@
 name: signinwithapple
 description: A new Flutter package to use platform-wide Apple-Sign-In!
 version: 0.0.1
-author:
-homepage:
+homepage: https://niggelgame.dev
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -13,6 +12,7 @@ dependencies:
   apple_sign_in: ^0.1.0
   device_info: ^0.4.2+2
 #  flutter_web_auth: ^0.2.0
+# Will be reset to the official release if PR #29 is accepted
   flutter_web_auth:
     git:
       url: https://github.com/Niggelgame/flutter_web_auth
