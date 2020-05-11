@@ -91,12 +91,10 @@ packages:
   flutter_web_auth:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "1f4ff0f450c36b7fe1ffcff4a2f07fce48fc3e03"
-      url: "https://github.com/Niggelgame/flutter_web_auth"
-    source: git
-    version: "0.2.1"
+      name: flutter_web_auth
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   image:
     dependency: transitive
     description:

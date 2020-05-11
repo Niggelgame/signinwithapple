@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:signinwithapple/signinwithapple.dart';
+import 'package:signinwithapple/flutter_signinwithapple.dart';
 
 void main() => runApp(MyApp());
 
