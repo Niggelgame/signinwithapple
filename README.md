@@ -5,8 +5,10 @@ A new Flutter package to use platform-wide Apple-Sign-In!
 It is only usable by Participants of the Apple Developer Program!
 
 In the background it uses [`flutter_web_auth`][flutter_web_auth] for all devices except iOS devices with iOS 13 or higher, where it uses [`apple_sign_in`][apple_sign_in] to provide a native look. 
+
 [flutter_web_auth]: https://pub.dev/packages/flutter_web_auth
 [apple_sign_in]: https://pub.dev/packages/apple_sign_in
+
 ## Setup
 
 The setup works like the most other Flutter Plugins, but you need to add the custom URL-Schemes to iOS and Android:
@@ -61,6 +63,7 @@ You have to follow some steps first before using this Plugin:
 First open your `Runner.xcodeworkspace` on your MacOS-Device, go to `Runner` and select the `Runner`-Target. Change your Bundle identifier to your own one, then choose `Signin & Capabilities`, where you need to select your Team, that is part of the Apple Developer Program. Recheck your Bundle Identifier, then add the `Sign in with Apple` Capability.
 
 In your [`Apple-Developer-Console`][Apple-Developer-Console] go to your `Certificates, IDs & Profiles`, navigate to `Keys` and register a new Key with the `Sign in with Apple` capability. When you configure it, select the Primary-App-ID you previously set as you Bundle Identifier.
+
 [Apple-Developer-Console]: https://developer.apple.com/account/#/overview/
 
 Now choose `Identifiers` in the left column, and add a new Service ID. Set your Description and Identifier (needs to be different from your Bundle Identifier). This identifier will be your `clientID`. After creation, open it up again and enable `Sign in with Apple`. 
